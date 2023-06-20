@@ -1,3 +1,20 @@
+# Hiding the discord bot token
+config/real_token.py
+
+# Discord
+discord.xml
+
+# Pycharm
+encodings.xml
+mcstatus-discordbot.iml
+misc.xml
+modules.xml
+profiles_settings.xml
+Project_Default.xml
+vcs.xml
+
+#### THE FOLLOWING IS FROM THE DEFAULT GITHUB PYTHON GITIGNORE ####
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
