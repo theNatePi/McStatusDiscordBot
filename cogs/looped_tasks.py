@@ -12,7 +12,8 @@ class LoopedTasks(commands.Cog):
     async def update_activity(self):
         activity = None
         if self._current_activity == 0:
-            activity = discord.Activity(type = discord.ActivityType.listening, name = "!online")
+            activity = discord.Activity(type = discord.ActivityType.listening,
+                                        name = "!online / !help")
             self._current_activity = 1
         elif self._current_activity == 1:
             server = connect_to_server()
