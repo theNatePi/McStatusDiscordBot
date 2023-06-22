@@ -4,7 +4,7 @@ import cogs
 from discord.ext import commands
 
 
-COGS = [cogs.Standard]
+COGS = [cogs.Standard, cogs.McStatus]
 """All cogs to add to the bot"""
 
 
