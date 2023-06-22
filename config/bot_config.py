@@ -5,6 +5,9 @@ import discord
 
 PREFIX = '!'
 
+SERVER = '24.199.71.94'
+PORT = 25565
+
 # INTENTS = discord.Intents.default()
 """Intents used by the bot"""
 # INTENTS.messages = True
