@@ -5,9 +5,10 @@ import discord
 
 PREFIX = '!'
 
-INTENTS = discord.Intents.default()
+# INTENTS = discord.Intents.default()
 """Intents used by the bot"""
-INTENTS.messages = True
+# INTENTS.messages = True
+INTENTS = discord.Intents.all()
 
 BOT_DESCRIPTION = 'A bot which can be configured to display information ' \
                   'about users on a specific Minecraft Server'
