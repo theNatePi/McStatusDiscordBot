@@ -4,7 +4,7 @@ from mcstatus import JavaServer
 
 
 class McStatus(commands.Cog, name = config.MCSTATUS_COG_NAME):
-    """Standard commands which can be used to interact with the bot"""
+    """Commands which give info about the server's status"""
 
     def __init__(self, bot):
         self._bot = bot
