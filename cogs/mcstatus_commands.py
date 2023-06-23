@@ -19,7 +19,7 @@ def get_info_from_server(server):
     if num_online == 0:
         server_info = serverInfo([], num_online)
     else:
-        players = [user['name'] for user in status.raw['players']['sample']]
+        players = [user['name'] for user in status['players']['sample']]
         server_info = serverInfo(players, num_online)
 
     return server_info
