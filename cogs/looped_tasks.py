@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands, tasks
-from .mcstatus_commands import connect_to_server, num_players_online
+from .mcstatus_commands import connect_to_server, get_info_from_server
 
 class LoopedTasks(commands.Cog):
     def __init__(self, bot):
@@ -18,9 +18,18 @@ class LoopedTasks(commands.Cog):
         elif self._current_activity == 1:
             try:
                 server = connect_to_server()
-                num_players = num_players_online(server)
+                server_info = get_info_from_server(server)
+                num_players = server_info.num_online
+
+                if num_players == 1:
+                    activity_name = '1 person online!'
+                elif num_players > 1:
+                    activity_name = f'{num_players} people online!'
+                else:
+                    activity_name = '0 people online!'
+
                 activity = discord.Activity(type = discord.ActivityType.watching,
-                                            name = f"{num_players} people online!")
+                                            name = activity_name)
             except Exception as exc:
                 activity = discord.Activity(type = discord.ActivityType.watching,
                                             name = 'ERROR')
