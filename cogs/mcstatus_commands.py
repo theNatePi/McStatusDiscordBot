@@ -1,7 +1,11 @@
 import discord
 import config
 from discord.ext import commands
+from collections import namedtuple
 from mcstatus import JavaServer
+
+
+serverInfo = namedtuple('serverInfo', ['players', 'num_online'])
 
 
 def connect_to_server():
@@ -9,16 +13,16 @@ def connect_to_server():
     return server
 
 
-def players_list(server):
-    status = server.status()
-    players = [user['name'] for user in status.raw['players']['sample']]
-    return players
+def get_info_from_server(server):
+    status = server.status().raw
+    num_online = status['players']['online']
+    if num_online == 0:
+        server_info = serverInfo([], num_online)
+    else:
+        players = [user['name'] for user in status.raw['players']['sample']]
+        server_info = serverInfo(players, num_online)
 
-
-def num_players_online(server):
-    players = players_list(server)
-    num_players = len(players)
-    return num_players
+    return server_info
 
 
 
@@ -50,7 +54,8 @@ class McStatus(commands.Cog, name = config.MCSTATUS_COG_NAME):
         original_message = await ctx.send('Loading...')
         try:
             server = connect_to_server()
-            players = players_list(server)
+            server_info = get_info_from_server(server)
+            players = server_info.players
 
             embed = self._create_online_embed(players)
             await original_message.edit(content = None, embed = embed)
