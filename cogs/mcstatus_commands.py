@@ -59,6 +59,10 @@ class McStatus(commands.Cog, name = config.MCSTATUS_COG_NAME):
 
             embed = self._create_online_embed(players)
             await original_message.edit(content = None, embed = embed)
+
+            loop_cog = self._bot.get_cog('LoopedTasks')
+            loop_cog.add_message_to_delete(config.DELETION_COOLDOWN, original_message)
+            loop_cog.add_message_to_delete(config.DELETION_COOLDOWN, ctx.message)
         except Exception as exc:
             print(f"ERROR during !online: {exc}")
             await original_message.edit(content = config.ONLINE_ERROR)
