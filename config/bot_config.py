@@ -13,6 +13,11 @@ PORT = 25565
 
 DELETION_COOLDOWN = 1
 """Cooldown before deleting messages queued to be deleted"""
+ACTIVITY_ROTATE_COOLDOWN = 10
+"""
+Time in seconds that it takes for the bot's activity to rotate
+One rotation also represents one tick of "cooldown" for message deletion
+"""
 
 # Allows all intents for the bot
 INTENTS = discord.Intents.all()

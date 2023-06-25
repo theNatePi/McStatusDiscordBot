@@ -1,19 +1,36 @@
+"""
+All cogs and functions relating to the use of the mcstatus library
+"""
 import discord
 import config
 from discord.ext import commands
 from collections import namedtuple
 from mcstatus import JavaServer
+from typing import List
 
 
 serverInfo = namedtuple('serverInfo', ['players', 'num_online'])
+serverInfo.__doc__ = 'Tuple containing list of online players and number of online players'
+serverInfo.players.__doc__ = 'List of players currently online'
+serverInfo.num_online.__doc__ = 'Integer number of players currently online'
 
 
-def connect_to_server():
+def connect_to_server() -> JavaServer:
+    """
+    Connects to the server defined in config
+    :return: JavaServer connection
+    """
     server = JavaServer(config.SERVER, config.PORT)
     return server
 
 
-def get_info_from_server(server):
+def get_info_from_server(server: JavaServer) -> serverInfo:
+    """
+    Gets info from JavaServer connection
+
+    :param server: JavaServer connection from connect_to_server method
+    :return: ServerInfo namedtuple
+    """
     status = server.status().raw
     num_online = status['players']['online']
     if num_online == 0:
@@ -28,13 +45,18 @@ def get_info_from_server(server):
 
 class McStatus(commands.Cog, name = config.MCSTATUS_COG_NAME):
     """Commands which give info about the server's status"""
-
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self._bot = bot
 
 
     @staticmethod
-    def _create_online_embed(players):
+    def _create_online_embed(players: List[str]) -> discord.Embed:
+        """
+        Creates an embed for the !online command
+
+        :param players: List of players currently online
+        :return: discord.Embed to be sent by the !online command
+        """
         if players:
             players_formatted = '\n'.join(players)
             players_formatted = f'```\n{players_formatted}\n```'
@@ -50,7 +72,12 @@ class McStatus(commands.Cog, name = config.MCSTATUS_COG_NAME):
 
 
     @commands.command(name = 'online', description = config.ONLINE_DESCRIPTION, help = config.ONLINE_HELP)
-    async def _online(self, ctx):
+    async def _online(self, ctx: commands.Context):
+        """
+        Defines the !online command
+
+        :param ctx: Message context sent by the Discord API
+        """
         original_message = await ctx.send('Loading...')
         try:
             server = connect_to_server()

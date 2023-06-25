@@ -1,5 +1,9 @@
+"""
+All cogs which rely on looped tasks (tasks.loop)
+"""
 import discord
 from discord.ext import commands, tasks
+from config import ACTIVITY_ROTATE_COOLDOWN
 from .mcstatus_commands import connect_to_server, get_info_from_server
 
 
@@ -89,7 +93,7 @@ class LoopedTasks(commands.Cog):
         return activity
 
 
-    @tasks.loop(seconds = 10)
+    @tasks.loop(seconds = ACTIVITY_ROTATE_COOLDOWN)
     async def update_activity(self):
         """
         Updates the activity of the discord bot, rotating between the available commands
