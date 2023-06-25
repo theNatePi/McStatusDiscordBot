@@ -5,15 +5,16 @@ import discord
 from hidden import SERVER
 
 PREFIX = '!'
+"""Bot prefix to use"""
 
+# Configure the server and port of the Minecraft server
 SERVER = SERVER
 PORT = 25565
 
 DELETION_COOLDOWN = 1
+"""Cooldown before deleting messages queued to be deleted"""
 
-# INTENTS = discord.Intents.default()
-"""Intents used by the bot"""
-# INTENTS.messages = True
+# Allows all intents for the bot
 INTENTS = discord.Intents.all()
 
 BOT_DESCRIPTION = 'A bot which can be configured to display information ' \
