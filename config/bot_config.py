@@ -2,10 +2,11 @@
 All config variables for the bot as a whole
 """
 import discord
+from hidden import SERVER
 
 PREFIX = '!'
 
-SERVER = '24.199.71.94'
+SERVER = SERVER
 PORT = 25565
 
 DELETION_COOLDOWN = 1

@@ -1,5 +1,5 @@
 # Hiding the discord bot token
-config/real_token.py
+config/hidden.py
 
 # Discord
 discord.xml
