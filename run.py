@@ -6,9 +6,6 @@ mcstatus-discordbot is a Discord Bot which displays simple information
 about a configured minecraft server
 """
 import asyncio
-
-import discord
-
 import config
 import cogs
 from discord.ext import commands
