@@ -13,6 +13,7 @@ This project is a WIP, but is meant to be available for anyone to use
 # How To Set Up
 ## Dependencies
 [discord.py](https://discordpy.readthedocs.io/en/stable/)
+
 [mcstatus](https://mcstatus.io/docs) (See python-mcstatus at bottom of API page)
 
 ## Setting up the bot
