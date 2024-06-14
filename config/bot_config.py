@@ -2,14 +2,16 @@
 All config variables for the bot as a whole
 """
 import discord
-from hidden import SERVER
+from .private import load_rcon_password, load_server_address
 
 PREFIX = '!'
 """Bot prefix to use"""
 
 # Configure the server and port of the Minecraft server
-SERVER = SERVER
-PORT = 25565
+SERVER = load_server_address()
+QUERY_PORT = 5001
+RCON_PORT = 7195
+RCON_PASSWORD = load_rcon_password()
 
 DELETION_COOLDOWN = 1
 """Cooldown before deleting messages queued to be deleted"""
