@@ -1,5 +1,5 @@
-# Hiding the discord bot token
-config/hidden.py
+# Custom
+.zed
 
 # Discord
 discord.xml
