@@ -2,10 +2,9 @@
 All cogs which rely on looped tasks (tasks.loop)
 """
 import discord
+import config
 from discord.ext import commands, tasks
-from config import ACTIVITY_ROTATE_COOLDOWN
-from .mcstatus_commands import connect_to_server, get_info_from_server
-
+from server import get_players_online
 
 
 class LoopedTasks(commands.Cog):
@@ -38,7 +37,11 @@ class LoopedTasks(commands.Cog):
         num_pops = 0
         for index, content in enumerate(zip(self._cooldown_for_deletion, self._messages_to_delete)):
             cooldown, message = content
-            if cooldown == 0:
+            if (cooldown == 1) and (message.author.id == config.BOT_ID):
+                await message.edit(content = "Deleting stale response...", embed = None)
+                cooldown -= 1
+                self._cooldown_for_deletion[index] = cooldown
+            elif cooldown == 0:
                 try:
                     await message.delete()
                 except Exception as exc:
@@ -71,9 +74,7 @@ class LoopedTasks(commands.Cog):
         :return: The activity which should be set
         """
         try:
-            server = connect_to_server()
-            server_info = get_info_from_server(server)
-            num_players = server_info.num_online
+            num_players = len(get_players_online())
 
             if num_players == 1:
                 activity_name = '1 person online!'
@@ -93,7 +94,7 @@ class LoopedTasks(commands.Cog):
         return activity
 
 
-    @tasks.loop(seconds = ACTIVITY_ROTATE_COOLDOWN)
+    @tasks.loop(seconds = config.ACTIVITY_ROTATE_COOLDOWN)
     async def update_activity(self):
         """
         Updates the activity of the discord bot, rotating between the available commands

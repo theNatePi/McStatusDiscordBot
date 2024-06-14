@@ -4,43 +4,8 @@ All cogs and functions relating to the use of the mcstatus library
 import discord
 import config
 from discord.ext import commands
-from collections import namedtuple
-from mcstatus import JavaServer
 from typing import List
-
-
-serverInfo = namedtuple('serverInfo', ['players', 'num_online'])
-serverInfo.__doc__ = 'Tuple containing list of online players and number of online players'
-serverInfo.players.__doc__ = 'List of players currently online'
-serverInfo.num_online.__doc__ = 'Integer number of players currently online'
-
-
-def connect_to_server() -> JavaServer:
-    """
-    Connects to the server defined in config
-    :return: JavaServer connection
-    """
-    server = JavaServer(config.SERVER, config.PORT)
-    return server
-
-
-def get_info_from_server(server: JavaServer) -> serverInfo:
-    """
-    Gets info from JavaServer connection
-
-    :param server: JavaServer connection from connect_to_server method
-    :return: ServerInfo namedtuple
-    """
-    status = server.status().raw
-    num_online = status['players']['online']
-    if num_online == 0:
-        server_info = serverInfo([], num_online)
-    else:
-        players = [user['name'] for user in status['players']['sample']]
-        server_info = serverInfo(players, num_online)
-
-    return server_info
-
+from server import get_players_online
 
 
 class McStatus(commands.Cog, name = config.MCSTATUS_COG_NAME):
@@ -80,9 +45,7 @@ class McStatus(commands.Cog, name = config.MCSTATUS_COG_NAME):
         """
         original_message = await ctx.send('Loading...')
         try:
-            server = connect_to_server()
-            server_info = get_info_from_server(server)
-            players = server_info.players
+            players = get_players_online()
 
             embed = self._create_online_embed(players)
             await original_message.edit(content = None, embed = embed)
