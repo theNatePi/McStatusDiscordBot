@@ -10,6 +10,7 @@ import config
 import cogs
 from discord.ext import commands
 from typing import List
+from config import load_bot_id
 
 
 COGS = [cogs.Standard, cogs.McStatus, cogs.LoopedTasks]
@@ -38,6 +39,7 @@ def _define_on_ready(bot: commands.Bot, added_cogs: List[commands.Cog]):
     @bot.event
     async def on_ready():
         print('Ready!')
+        config.BOT_ID = load_bot_id(bot)
         _start_background_tasks(added_cogs)
 
 
