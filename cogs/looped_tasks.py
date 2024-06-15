@@ -4,7 +4,7 @@ All cogs which rely on looped tasks (tasks.loop)
 import discord
 import config
 from discord.ext import commands, tasks
-from server import get_players_online
+from server import get_players_online, handle_server_commands
 
 
 class LoopedTasks(commands.Cog):
@@ -14,6 +14,7 @@ class LoopedTasks(commands.Cog):
         self._current_activity = 0
         self._messages_to_delete = []
         self._cooldown_for_deletion = []
+        self._make_wish = True
 
 
     def add_message_to_delete(self, cooldown: int, message: discord.Message):
@@ -105,6 +106,7 @@ class LoopedTasks(commands.Cog):
         activity = None
 
         await self._delete_messages()
+        self._make_wish = await handle_server_commands(self._make_wish)
 
         if self._current_activity == 0:
             activity = self._get_activity_zero()

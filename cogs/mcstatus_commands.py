@@ -5,7 +5,7 @@ import discord
 import config
 from discord.ext import commands
 from typing import List
-from server import get_players_online
+from server import get_players_online, setup_player
 
 
 class McStatus(commands.Cog, name = config.MCSTATUS_COG_NAME):
@@ -22,6 +22,7 @@ class McStatus(commands.Cog, name = config.MCSTATUS_COG_NAME):
         :param players: List of players currently online
         :return: discord.Embed to be sent by the !online command
         """
+        print(players)
         if players:
             players_formatted = '\n'.join(players)
             players_formatted = f'```\n{players_formatted}\n```'
@@ -56,3 +57,26 @@ class McStatus(commands.Cog, name = config.MCSTATUS_COG_NAME):
         except Exception as exc:
             print(f"ERROR during !online: {exc}")
             await original_message.edit(content = config.ONLINE_ERROR)
+
+    @commands.command(name = 'verify', description = "TODO", help = "TODO")
+    async def _verify(self, ctx: commands.Context):
+        """
+        Defines the !online command
+
+        :param ctx: Message context sent by the Discord API
+        """
+        try:
+            username = ctx.message.content.split(" ")[1]
+            if not username:
+                raise IndexError
+        except IndexError:
+            await ctx.send("Please provide username with `!online username`")
+            return
+
+        original_message = await ctx.send(f'Verifying {username}...')
+        try:
+            setup_player(username)
+
+            await original_message.edit(content = f'Verified {username}!')
+        except Exception as exc:
+            print(f"ERROR during !verify: {exc}")

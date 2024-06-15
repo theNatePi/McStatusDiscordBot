@@ -47,4 +47,6 @@ def get_players_online() -> list[str]:
 	for player in raw_players:
 		players.append(player.strip())
 
+	if players == [""]:
+		return []
 	return players
