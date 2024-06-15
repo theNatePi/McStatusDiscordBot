@@ -70,7 +70,7 @@ class McStatus(commands.Cog, name = config.MCSTATUS_COG_NAME):
             if not username:
                 raise IndexError
         except IndexError:
-            await ctx.send("Please provide username with `!online username`")
+            await ctx.send("Please provide username with `!verify username`")
             return
 
         original_message = await ctx.send(f'Verifying {username}...')
