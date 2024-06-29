@@ -13,9 +13,11 @@ class LoopedTasks(commands.Cog):
         self._bot = bot
         self._current_activity = 0
         self._messages_to_delete = []
+        self._previous_messages = []
         self._cooldown_for_deletion = []
         self._make_wish = True
 
+        self.online_player_cache = []
 
     def add_message_to_delete(self, cooldown: int, message: discord.Message):
         """
@@ -28,6 +30,10 @@ class LoopedTasks(commands.Cog):
         """
         self._cooldown_for_deletion.append(cooldown)
         self._messages_to_delete.append(message)
+
+
+    def add_message_to_previous(self, message: discord.Message):
+        self._previous_messages.append(message)
 
 
     async def _delete_messages(self):
@@ -104,6 +110,13 @@ class LoopedTasks(commands.Cog):
         Also deletes all messages which have finished their cooldown
         """
         activity = None
+
+        new_player_cache = get_players_online()
+        if new_player_cache != self.online_player_cache:
+            for message in self._previous_messages:
+                self.add_message_to_delete(config.DELETION_COOLDOWN, message)
+            self.online_player_cache = new_player_cache
+            self._previous_messages.clear()
 
         await self._delete_messages()
         self._make_wish = await handle_server_commands(self._make_wish)
