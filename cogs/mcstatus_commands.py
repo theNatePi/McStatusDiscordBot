@@ -16,27 +16,74 @@ class McStatus(commands.Cog, name = config.MCSTATUS_COG_NAME):
         self._bot = bot
 
     @staticmethod
-    def _create_embed_player_image(previous_images, next_image):
-        image1 = previous_images.convert("RGBA")
-        image2 = next_image.convert("RGBA")
+    def _create_embed_player_image(images: List[Image.Image]) -> Image.Image:
         gap = 10
+        players_per_row = 4
 
-        (width1, height1) = image1.size
-        (width2, height2) = image2.size
+        def _add_right(existing, new):
+            image1 = existing.convert("RGBA")
+            image2 = new.convert("RGBA")
 
-        result_width = width1 + gap + width2
-        result_height = max(height1, height2)
+            (width1, height1) = image1.size
+            (width2, height2) = image2.size
 
-        # Create a new image with RGBA mode to support transparency
-        result = Image.new('RGBA', (result_width, result_height), (255, 255, 255, 0))
-        result.paste(im = image1, box = (0, 0))
+            result_width = width1 + gap + width2
+            result_height = max(height1, height2)
 
-        # Extract the alpha channel of the second image
-        image2_alpha = image2.split()[-1]
-        result.paste(im = image2, box = (width1 + gap, 0), mask = image2_alpha)
+            # Create a new image with RGBA mode to support transparency
+            result = Image.new('RGBA', (result_width, result_height), (255, 255, 255, 0))
+            result.paste(im = image1, box = (0, 0))
 
-        # Save the merged image as PNG to preserve transparency
-        return result
+            # Extract the alpha channel of the second image
+            image2_alpha = image2.split()[-1]
+            result.paste(im = image2, box = (width1 + gap, 0), mask = image2_alpha)
+
+            # Save the merged image as PNG to preserve transparency
+            return result
+
+        def _add_bottom(top, bottom):
+            image1 = top.convert("RGBA")
+            image2 = bottom.convert("RGBA")
+
+            (width1, height1) = image1.size
+            (width2, height2) = image2.size
+
+            result_width = max(width1, width2)
+            result_height = height1 + gap + height2
+
+            # Create a new image with RGBA mode to support transparency
+            result = Image.new('RGBA', (result_width, result_height), (255, 255, 255, 0))
+            result.paste(im = image1, box = (0, 0))
+
+            # Extract the alpha channel of the second image
+            image2_alpha = image2.split()[-1]
+            result.paste(im = image2, box = (0, height1 + gap), mask = image2_alpha)
+
+            # Save the merged image as PNG to preserve transparency
+            return result
+
+        if len(images) == 1:
+            return images[0]
+
+        column = 1
+        base = images[0]
+        rows = []
+        for image in images[1:]:
+            if column == players_per_row:
+                column = 1
+                rows.append(base)
+                base = image
+                continue
+            base = _add_right(base, image)
+
+            column += 1
+        rows.append(base)
+
+        output = rows[0]
+        for row in rows[1:]:
+            output = _add_bottom(output, row)
+
+        return output
 
     def _create_online_embed(self, players: List[tuple[str, Image.Image]]) -> discord.Embed:
         """
@@ -55,11 +102,8 @@ class McStatus(commands.Cog, name = config.MCSTATUS_COG_NAME):
             for player in players:
                 usernames.append(player[0])
 
-            image = players[0][1]
-            if len(players) > 1:
-                for player in players[1:]:
-                    image = self._create_embed_player_image(image, player[1])
-
+            player_images = [player[1] for player in players]
+            image = self._create_embed_player_image(player_images)
 
             image.save(file_path)
 
